@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::GET('bookings/status/{id}', 'BookingFormController@status')->middleware(['middleware' => 'permission:edit bookingform'])->name('bookingform.status');
     Route::POST('bookings/update/{id}', 'BookingFormController@update')->middleware(['middleware' => 'permission:edit bookingform'])->name('bookingform.update');
     Route::GET('bookings/destroy/{id}', 'BookingFormController@destroy')->middleware(['middleware' => 'permission:delete bookingform'])->name('bookingform.destroy');
+    Route::GET('bookings/destroy/{id}', 'BookingFormController@destroy')->middleware(['middleware' => 'permission:delete bookingform'])->name('bookingform.destroy');
     //Booking Forms end
 
     //Contact Forms
@@ -215,6 +216,6 @@ Route::group(['middleware' => ['auth']], function(){
     Route::GET('reports/comissionReport', 'ReportController@comissionReport')->name('report.comissions');
     //Report end
     // Contact Form
-    Route::GET('create_contact_form', 'contact_formController@contact_form')->name('contact.form');
+    Route::POST('create_contact_form', 'contact_formController@contact_form')->name('contact.form');
 
 });
