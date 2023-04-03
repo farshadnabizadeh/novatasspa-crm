@@ -109,6 +109,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::POST('reservations/update/{id}', 'ReservationController@update')->middleware(['middleware' => 'permission:edit reservation'])->name('reservation.update');
     Route::GET('reservations/destroy/{id}', 'ReservationController@destroy')->middleware(['middleware' => 'permission:delete reservation'])->name('reservation.delete');
     Route::POST('reservations/addCustomertoReservation', 'ReservationController@addCustomertoReservation')->middleware(['middleware' => 'permission:create reservation']);
+    Route::POST('reservations/booking', 'ReservationController@booking');
 
     //payment type
     Route::POST('reservations/addPaymentTypetoReservation', 'ReservationController@addPaymentTypetoReservation')->middleware(['middleware' => 'permission:create reservation']);
@@ -217,5 +218,6 @@ Route::group(['middleware' => ['auth']], function(){
     //Report end
     // Contact Form
     Route::POST('create_contact_form', 'contact_formController@contact_form')->name('contact.form');
+
 
 });

@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Hotel;
 use App\Models\Guide;
 use App\Models\User;
+use App\Models\BookingForm;
 use App\Mail\NotificationMail;
 use Mail;
 use Auth;
@@ -696,6 +697,46 @@ class ReservationController extends Controller
         }
         catch (\Throwable $th) {
             throw $th;
+        }
+    }
+
+    public function booking(Request $request){
+        // $request->reservation_date;
+        // $request->reservation_time;
+        // explode($dilimiter,$request->fullname)[0]
+        // explode($dilimiter,$request->fullname)[1]
+        // $request->guest
+        // $request->phone
+        // $request->email
+        // $request->hammam
+        // $HammamTypes = str_replace(',','-',trim(trim($request->hammam,'['),']'));
+        // $MassageTypes = str_replace(',','-',trim(trim($request->massage,'['),']'));
+        // $dilimiter = null;
+        // if (str_contains($request->fullname, ',')) {$dilimiter = ',';}
+        // else{$dilimiter = ' ';}
+
+        if(BookingForm::create([
+            'reservation_date'=>$request->reservation_date,
+            'reservation_time'=>$request->reservation_time,
+            'name_surname'=>str_contains($request->fullname, ',')?str_replace(',',' ',$request->fullname):$request->fullname,
+            'phone'=>$request->phone,
+            'country'=>$request->country,
+            'massage_package'=>str_replace(',','-',trim(trim($request->massage,'['),']')),
+            'hammam_package'=>str_replace(',','-',trim(trim($request->hammam,'['),']')),
+            'male_pax'=>$request->male,
+            'female_pax'=>$request->female,
+            'form_status_id'=>1,
+            'answered_time'=>null,
+        ])){
+            return response()->json([
+                'code'=>200,
+                'data'=>'Your Information recorded successfully',
+            ]);
+        }else{
+            return response()->json([
+                'code'=>400,
+                'data'=>'opration failed',
+            ]);
         }
     }
 }

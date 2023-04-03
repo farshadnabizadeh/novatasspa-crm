@@ -9,14 +9,9 @@ use Carbon\Carbon;
 class contact_formController extends Controller
 {
    public function contact_form(Request $request){
-    $dilimiter = null;
-    if (str_contains($request->fullname, ',')) {
-        $dilimiter = ',';
-    }else{
-        $dilimiter = ' ';
-    }
+
     if(ContactForm::create([
-        'name_surname'=>$request->fullname,
+        'name_surname'=>str_contains($request->fullname, ',')?str_replace(',',' ',$request->fullname):$request->fullname,
         'phone'=>$request->telephon,
         'country'=>$request->country,
         'email'=>$request->email,
