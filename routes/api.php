@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\ContactFormApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::POST('create_contact_form', 'contact_formController@contact_form')->name('contact.form');
+Route::POST('CreateContactForm', [ContactFormApiController::class,'ContactForm']);
 Route::POST('reservations/booking', 'ReservationController@booking');
 Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');

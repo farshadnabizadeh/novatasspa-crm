@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ContactForm;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
-class contact_formController extends Controller
+class ContactFormApiController extends Controller
 {
-    public function contact_form(Request $request)
+    public function ContactForm(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name_surname' => 'required',
             'phone' => 'required',
@@ -21,7 +23,7 @@ class contact_formController extends Controller
             return 'inputs can not be empty';
         } else {
             if (ContactForm::create([
-                'name_surname' => str_contains($request->fullname, ',') ? str_replace(',', ' ', $request->fullname) : $request->fullname,
+                'name_surname' => str_contains($request->name_surname, ',') ? str_replace(',', ' ', $request->name_surname) : $request->name_surname,
                 'phone' => $request->telephon,
                 'country' => $request->country,
                 'email' => $request->email,
