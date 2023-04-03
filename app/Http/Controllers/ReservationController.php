@@ -15,8 +15,6 @@ use App\Models\Therapist;
 use App\Models\Customer;
 use App\Models\Hotel;
 use App\Models\Guide;
-use App\Models\User;
-use App\Models\BookingForm;
 use App\Mail\NotificationMail;
 use Mail;
 use Auth;
@@ -662,48 +660,6 @@ class ReservationController extends Controller
             return back()->with('message', 'Rezervasyon Başarıyla Silindi!');
         } catch (\Throwable $th) {
             throw $th;
-        }
-    }
-
-    public function booking(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'reservation_date' => 'required',
-            'reservation_time' => 'required',
-            'name_surname' => 'required',
-            'phone' => 'required',
-            'country' => 'required',
-            'massage_package' => 'required',
-            'hammam_package' => 'required',
-            'male_pax' => 'required',
-            'female_pax' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return 'inputs can not be empty';
-        } else {
-            if (BookingForm::create([
-                'reservation_date' => $request->reservation_date,
-                'reservation_time' => $request->reservation_time,
-                'name_surname' => str_contains($request->fullname, ',') ? str_replace(',', ' ', $request->fullname) : $request->fullname,
-                'phone' => $request->phone,
-                'country' => $request->country,
-                'massage_package' => str_replace(',', '-', trim(trim($request->massage, '['), ']')),
-                'hammam_package' => str_replace(',', '-', trim(trim($request->hammam, '['), ']')),
-                'male_pax' => $request->male,
-                'female_pax' => $request->female,
-                'form_status_id' => 1,
-                'answered_time' => null,
-            ])) {
-                return response()->json([
-                    'code' => 200,
-                    'data' => 'Your Information recorded successfully',
-                ]);
-            } else {
-                return response()->json([
-                    'code' => 400,
-                    'data' => 'opration failed',
-                ]);
-            }
         }
     }
 }

@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ContactFormApiController;
+use App\Http\Controllers\Api\BookingFormApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,6 +18,6 @@ use App\Http\Controllers\Api\ContactFormApiController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::POST('CreateContactForm', [ContactFormApiController::class,'ContactForm']);
-Route::POST('reservations/booking', 'ReservationController@booking');
+Route::POST('CreateContactForm', [ContactFormApiController::class, 'ContactForm']);
+Route::POST('BookingForm', [BookingFormApiController::class, 'Booking']);
 Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');
