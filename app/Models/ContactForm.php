@@ -11,7 +11,7 @@ class ContactForm extends Model
 {
     use SoftDeletes;
     protected $table = 'contact_forms';
-
+    protected $fillable = ['name_surname','phone','country','email','form_status_id','answered_time'];
     public function status()
     {
         return $this->belongsTo(FormStatuses::class, 'form_status_id');

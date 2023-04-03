@@ -213,7 +213,8 @@ Route::group(['middleware' => ['auth']], function(){
     Route::GET('reports/therapistReport', 'ReportController@therapistReport')->name('report.therapist');
     Route::GET('reports/sourceReport', 'ReportController@sourceReport')->name('report.source');
     Route::GET('reports/comissionReport', 'ReportController@comissionReport')->name('report.comissions');
-
     //Report end
+    // Contact Form
+    Route::GET('create_contact_form', 'contact_formController@contact_form')->name('contact.form');
 
 });
