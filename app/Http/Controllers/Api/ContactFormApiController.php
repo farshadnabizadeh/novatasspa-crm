@@ -22,22 +22,29 @@ class ContactFormApiController extends Controller
         if ($validator->fails()) {
             return 'inputs can not be empty';
         } else {
-            if (ContactForm::create([
-                'name_surname' => str_contains($request->name_surname, ',') ? str_replace(',', ' ', $request->name_surname) : $request->name_surname,
-                'phone' => $request->telephon,
-                'country' => $request->country,
-                'email' => $request->email,
-                'form_status_id' => 1,
-                'answered_time' => null,
-            ])) {
-                return response()->json([
-                    "code" => 200,
-                    "data" => "your info recorded successfully",
-                ]);
-            } else {
+            if(intval(ContactForm::where('email',$request->email)->count())==0){
+                if (ContactForm::create([
+                    'name_surname' => str_contains($request->name_surname, ',') ? str_replace(',', ' ', $request->name_surname) : $request->name_surname,
+                    'phone' => $request->telephon,
+                    'country' => $request->country,
+                    'email' => $request->email,
+                    'form_status_id' => 1,
+                    'answered_time' => null,
+                ])) {
+                    return response()->json([
+                        "code" => 200,
+                        "data" => "your info recorded successfully",
+                    ]);
+                } else {
+                    return response()->json([
+                        "code" => 400,
+                        "data" => "operation failed",
+                    ]);
+                }
+            }else{
                 return response()->json([
                     "code" => 400,
-                    "data" => "operation failed",
+                    "data" => "This Email Already recorded",
                 ]);
             }
         }
