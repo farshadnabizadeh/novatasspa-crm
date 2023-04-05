@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::GET('bookings/status/{id}', 'BookingFormController@status')->middleware(['middleware' => 'permission:edit bookingform'])->name('bookingform.status');
     Route::POST('bookings/update/{id}', 'BookingFormController@update')->middleware(['middleware' => 'permission:edit bookingform'])->name('bookingform.update');
     Route::GET('bookings/destroy/{id}', 'BookingFormController@destroy')->middleware(['middleware' => 'permission:delete bookingform'])->name('bookingform.destroy');
+    Route::GET('bookings/destroy/{id}', 'BookingFormController@destroy')->middleware(['middleware' => 'permission:delete bookingform'])->name('bookingform.destroy');
     //Booking Forms end
 
     //Contact Forms
@@ -108,6 +109,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::POST('reservations/update/{id}', 'ReservationController@update')->middleware(['middleware' => 'permission:edit reservation'])->name('reservation.update');
     Route::GET('reservations/destroy/{id}', 'ReservationController@destroy')->middleware(['middleware' => 'permission:delete reservation'])->name('reservation.delete');
     Route::POST('reservations/addCustomertoReservation', 'ReservationController@addCustomertoReservation')->middleware(['middleware' => 'permission:create reservation']);
+
 
     //payment type
     Route::POST('reservations/addPaymentTypetoReservation', 'ReservationController@addPaymentTypetoReservation')->middleware(['middleware' => 'permission:create reservation']);
@@ -213,7 +215,5 @@ Route::group(['middleware' => ['auth']], function(){
     Route::GET('reports/therapistReport', 'ReportController@therapistReport')->name('report.therapist');
     Route::GET('reports/sourceReport', 'ReportController@sourceReport')->name('report.source');
     Route::GET('reports/comissionReport', 'ReportController@comissionReport')->name('report.comissions');
-
     //Report end
-
 });
