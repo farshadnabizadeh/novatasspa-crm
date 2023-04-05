@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\BookingForm;
+use App\Http\Controllers\Api\BaseController as BaseController;
 
-class BookingFormApiController extends Controller
+class BookingFormApiController extends BaseController
 {
-    public function Booking(Request $request)
+    public function store(Request $request)
     {
         $hammam = null;
         $massage = null;
@@ -17,24 +18,24 @@ class BookingFormApiController extends Controller
             'reservation_date' => 'required',
             'reservation_time' => 'required',
             'name_surname' => 'required',
-            'hammam' => 'array',
-            'massage' => 'array',
+            'hammam_package' => 'array',
+            'massage_package' => 'array',
             'phone' => 'required',
             'country' => 'required',
-            'male' => 'required',
-            'female' => 'required',
+            'male_pax' => 'required',
+            'female_pax' => 'required',
         ]);
-        $validator->sometimes('hammam', 'required_without:massage', function (Request $request) {
-            return !isset($request->massage);
+        $validator->sometimes('hammam_package', 'required_without:massage_package', function ($input) {
+            return !isset($input->massage_package);
         });
-        $validator->sometimes('massage', 'required_without:hammam', function (Request $request) {
-            return !isset($request->hammam);
+        $validator->sometimes('massage_package', 'required_without:hammam_package', function ($input) {
+            return !isset($input->hammam_package);
         });
-        if ($request->hammam != "") {
-            $hammam = implode(' - ',$request->hammam);
+        if ($request->hammam_package != "") {
+            $hammam = implode(' - ',$request->hammam_package);
         }
-        if ($request->massage != "") {
-            $massage =  implode(' - ',$request->massage);
+        if ($request->massage_package != "") {
+            $massage =  implode(' - ',$request->massage_package);
         }
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
@@ -48,8 +49,8 @@ class BookingFormApiController extends Controller
                     'country' => $request->country,
                     'massage_package' => $massage,
                     'hammam_package' =>$hammam,
-                    'male_pax' => $request->male,
-                    'female_pax' => $request->female,
+                    'male_pax' => $request->male_pax,
+                    'female_pax' => $request->female_pax,
                     'form_status_id' => 1,
                     'answered_time' => null,
                 ])) {

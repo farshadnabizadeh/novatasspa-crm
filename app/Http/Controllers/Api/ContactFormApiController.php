@@ -10,7 +10,7 @@ use App\Http\Controllers\Controller;
 
 class ContactFormApiController extends Controller
 {
-    public function ContactForm(Request $request)
+    public function store(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
@@ -25,7 +25,7 @@ class ContactFormApiController extends Controller
             if(intval(ContactForm::where('email',$request->email)->count())==0){
                 if (ContactForm::create([
                     'name_surname' => str_contains($request->name_surname, ',') ? str_replace(',', ' ', $request->name_surname) : $request->name_surname,
-                    'phone' => $request->telephon,
+                    'phone' => $request->phone,
                     'country' => $request->country,
                     'email' => $request->email,
                     'form_status_id' => 1,
