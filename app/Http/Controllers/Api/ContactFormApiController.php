@@ -20,7 +20,7 @@ class ContactFormApiController extends Controller
             'email' => 'required',
         ]);
         if ($validator->fails()) {
-            return 'inputs can not be empty';
+            return $this->sendError('Validation Error.', $validator->errors());
         } else {
             if(intval(ContactForm::where('email',$request->email)->count())==0){
                 if (ContactForm::create([
