@@ -24,7 +24,7 @@ class ContactFormApiController extends Controller
         } else {
             if(intval(ContactForm::where('email',$request->email)->count())==0){
                 if (ContactForm::create([
-                    'name_surname' => str_contains($request->name_surname, ',') ? str_replace(',', ' ', $request->name_surname) : $request->name_surname,
+                    'name_surname' => $request->name_surname,
                     'phone' => $request->phone,
                     'country' => $request->country,
                     'email' => $request->email,
