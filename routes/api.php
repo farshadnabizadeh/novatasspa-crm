@@ -4,10 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ContactFormApiController;
 use App\Http\Controllers\Api\BookingFormApiController;
-# Headers To resolve Cors Error
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: *');
-header('Access-Control-Allow-Headers: *');
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -22,9 +19,6 @@ header('Access-Control-Allow-Headers: *');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-// Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');
-Route::middleware('cors')->group(function () {
-
-    Route::POST('/contactform/store', [ContactFormApiController::class, 'store']);
-    Route::POST('/bookingform/store', [BookingFormApiController::class, 'store']);
-});
+Route::POST('/contactform/store', [ContactFormApiController::class, 'store'])->middleware('enableCORS');
+Route::POST('/bookingform/store', [BookingFormApiController::class, 'store'])->middleware('enableCORS');
+Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store')->middleware('enableCORS');
