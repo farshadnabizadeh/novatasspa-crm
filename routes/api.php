@@ -22,6 +22,9 @@ header('Access-Control-Allow-Headers: *');
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::POST('/contactform/store', [ContactFormApiController::class, 'store']);
-Route::POST('/bookingform/store', [BookingFormApiController::class, 'store']);
-Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');
+// Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');
+Route::middleware('cors')->group(function () {
+
+    Route::POST('/contactform/store', [ContactFormApiController::class, 'store']);
+    Route::POST('/bookingform/store', [BookingFormApiController::class, 'store']);
+});
