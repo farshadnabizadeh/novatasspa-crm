@@ -19,6 +19,6 @@ use App\Http\Controllers\Api\BookingFormApiController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::POST('/contactform/store', [ContactFormApiController::class, 'store'])->middleware('enableCORS');
-Route::POST('/bookingform/store', [BookingFormApiController::class, 'store'])->middleware('enableCORS');
-Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store')->middleware('enableCORS');
+Route::POST('/contactform/store', [ContactFormApiController::class, 'store']);
+Route::POST('/bookingform/store', [BookingFormApiController::class, 'store']);
+Route::POST('/medicalform/store', 'App\Http\Controllers\Api\MedicalFormController@store');
