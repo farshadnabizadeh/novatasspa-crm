@@ -14,6 +14,7 @@ class BookingFormApiController extends BaseController
     {
         $hammam = null;
         $massage = null;
+        $checksum = true; // default:true
         $validator = Validator::make($request->all(), [
             'reservation_date' => 'required',
             'reservation_time' => 'required',
@@ -32,28 +33,32 @@ class BookingFormApiController extends BaseController
             return !isset($input->hammam_package);
         });
         if ($request->hammam_package != "") {
-            $hammam = implode(' - ',$request->hammam_package);
+            $hammam = implode(' - ', $request->hammam_package);
         }
         if ($request->massage_package != "") {
-            $massage =  implode(' - ',$request->massage_package);
+            $massage =  implode(' - ', $request->massage_package);
+        }
+        if ($hammam == '' && $massage == '') {
+            $checksum = false;
         }
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         } else {
             if (intval(BookingForm::where('reservation_date', $request->reservation_date)->where('reservation_time', $request->reservation_time)->count()) == 0) {
-                if (BookingForm::create([
-                    'reservation_date' => $request->reservation_date,
-                    'reservation_time' => $request->reservation_time,
-                    'name_surname' => $request->name_surname,
-                    'phone' => $request->phone,
-                    'country' => $request->country,
-                    'massage_package' => $massage,
-                    'hammam_package' =>$hammam,
-                    'male_pax' => $request->male_pax,
-                    'female_pax' => $request->female_pax,
-                    'form_status_id' => 1,
-                    'answered_time' => null,
-                ])) {
+                if ($checksum) {
+                    BookingForm::create([
+                        'reservation_date' => $request->reservation_date,
+                        'reservation_time' => $request->reservation_time,
+                        'name_surname' => $request->name_surname,
+                        'phone' => $request->phone,
+                        'country' => $request->country,
+                        'massage_package' => $massage,
+                        'hammam_package' => $hammam,
+                        'male_pax' => $request->male_pax,
+                        'female_pax' => $request->female_pax,
+                        'form_status_id' => 1,
+                        'answered_time' => null,
+                    ]);
                     return response()->json([
                         'code' => 200,
                         'data' => 'Your Information recorded successfully',
@@ -61,7 +66,7 @@ class BookingFormApiController extends BaseController
                 } else {
                     return response()->json([
                         'code' => 400,
-                        'data' => 'opration failed',
+                        'data' => 'You must select one of the packages(Hammam or Massage)',
                     ]);
                 }
             } else {
