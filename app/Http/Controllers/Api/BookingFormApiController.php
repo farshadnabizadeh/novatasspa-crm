@@ -39,7 +39,7 @@ class BookingFormApiController extends BaseController
             $massage =  implode(' - ', $request->massage_package);
         }
         if ($hammam == '' && $massage == '') {
-            $checksum = false;
+            $checksum = false; // if there are any Hammam or Massage Package and then checksum will be true
         }
         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
