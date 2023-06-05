@@ -61,18 +61,18 @@ class BookingFormApiController extends BaseController
                     ]);
                     return response()->json([
                         'code' => 200,
-                        'data' => 'Your Information recorded successfully',
+                        'data' => 'We Recieved Your Booking Successfully',
                     ]);
                 } else {
                     return response()->json([
                         'code' => 400,
-                        'data' => 'You must select one of the packages(Hammam or Massage)',
+                        'data' => 'You Must Select Minimum One Package From Hammam Or Massage',
                     ]);
                 }
             } else {
                 return response()->json([
                     'code' => 400,
-                    'data' => 'This information already recorded',
+                    'data' => 'You Already Have a Booking on that Day/time',
                 ]);
             }
         }

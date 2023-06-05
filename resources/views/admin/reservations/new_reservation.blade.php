@@ -112,6 +112,12 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group">
+                                                    <label for="salePersonName">Satışcı Adı</label>
+                                                    <input type="text" class="form-control" id="salePersonName" name="salePersonName" placeholder="Satışcı Adı" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
                                                     <label for="note">Rezervasyon Notu</label>
                                                     <textarea class="form-control" id="note" placeholder="Rezervasyon Notu"></textarea>
                                                 </div>
@@ -211,6 +217,10 @@
                                         <hr>
                                         <div class="row">
                                             <div class="col-lg-3">
+                                                <p>Satışcı Adı: <span class="sale-person-name"></span></p>
+                                            </div>
+                                            <div class="col-lg-3"></div>
+                                            <div class="col-lg-3">
                                                 <p>Ödeme Türü: <span class="payment-type"></span></p>
                                             </div>
                                             <div class="col-lg-3"></div>
@@ -286,7 +296,7 @@
                         </select>
                     </div>
                     <div class="col-lg-4">
-                        <label for="customerNumber">Kaç Kişi</label>
+                        <label for="customerNumber">Adeti</label>
                         <input type="number" class="form-control" id="customerNumber">
                     </div>
                 </div>

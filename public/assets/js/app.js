@@ -437,6 +437,7 @@ var app = (function() {
     $("#tableHotels").dataTable({ paging: true, pageLength: 25 });
     $("#tableSource").dataTable({ paging: true, pageLength: 25 });
     $("#tableService").dataTable({ paging: true, pageLength: 25 });
+    $("#tableCountry").dataTable({ paging: true, pageLength: 25 });
 
     $('.navbar-nav li a').on('click', function () {
         $(this).parent().toggleClass('active');
@@ -1656,4 +1657,18 @@ function therapistExcel() {
         return buf;
     }
     saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'Terapist_Raporu_'+now_date+'.xlsx');
+}
+function tableCountryExcel() {
+    /* Get table data */
+    var wb = XLSX.utils.table_to_book(document.getElementById('tableCountry'), {sheet:"Sheet JS"});
+
+    /* Save to file */
+    var wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'Rezervasyon_Ülke_Özetleri_Raporu_'+now_date+'.xlsx');
 }

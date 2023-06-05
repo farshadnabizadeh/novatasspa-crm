@@ -30,6 +30,7 @@
                                 <th scope="col">Rezervasyon Saati</th>
                                 <th scope="col">Müşteri Adı</th>
                                 <th scope="col">Kaynak</th>
+                                <th scope="col">Hizmet</th>
                                 <th scope="col">Ödeme</th>
                                 <th scope="col">Oda Numarası</th>
                                 <th scope="col">Alınış Saati</th>
@@ -50,8 +51,14 @@
                                 </td>
                                 <td>{{ date('d-m-Y', strtotime($listAllByDate->reservation_date)) }}</td>
                                 <td>{{ $listAllByDate->reservation_time }}</td>
+
                                 <td><a href="{{ route('customer.edit', ['id' => $listAllByDate->customer_id]) }}">{{ $listAllByDate->Cname }}</a></td>
-                                <td class="text-white" style="background-color: {{ $listAllByDate->color }}">{{ $listAllByDate->name }}</td>
+                                @if ($listAllByDate->sId == 3 || $listAllByDate->sId == 4 || $listAllByDate->sId == 5|| $listAllByDate->sId == 18)
+                                    <td class="text-white" style="background-color: #276cb8">GOOGLE</td>
+                                @else
+                                    <td class="text-white" style="background-color: {{ $listAllByDate->color }}">{{ $listAllByDate->name }} @if($listAllByDate->hName)/ {{ $listAllByDate->hName }}@endif</td>
+                                @endif
+                                <td>{{ implode(' + ', explode(',', $listAllByDate->service_names)) }}</td>
                                 <td>
                                     @if($listAllByDate->payment_price == NULL)
                                     <p class="text-center"><i class="fa fa-times non-icon"></i></p>

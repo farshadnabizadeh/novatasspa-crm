@@ -15,6 +15,7 @@ use App\Models\Therapist;
 use App\Models\Customer;
 use App\Models\Hotel;
 use App\Models\Guide;
+use App\Models\User;
 use App\Mail\NotificationMail;
 use Mail;
 use Auth;
@@ -22,7 +23,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Html\Builder;
 use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
 {
@@ -47,13 +47,13 @@ class ReservationController extends Controller
                             <button class="btn btn-primary dropdown-toggle action-btn" type="button" data-toggle="dropdown">İşlem <span class="caret"></span></button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="' . route('reservation.edit', ['id' => $item->id]) . '" class="btn btn-info edit-btn"><i class="fa fa-pencil-square-o"></i> Güncelle</a>
+                                    <a href="'.route('reservation.edit', ['id' => $item->id]).'" class="btn btn-info edit-btn"><i class="fa fa-pencil-square-o"></i> Güncelle</a>
                                 </li>
                                 <li>
-                                    <a href="/reservations/destroy/' . $item->id . '" onclick="return confirm(\'Are you sure?\')" class="btn btn-danger edit-btn"><i class="fa fa-trash"></i> Sil</a>
+                                    <a href="/reservations/destroy/'.$item->id.'" onclick="return confirm(\'Are you sure?\')" class="btn btn-danger edit-btn"><i class="fa fa-trash"></i> Sil</a>
                                 </li>
                                 <li>
-                                    <a href="' . route('reservation.download', ['id' => $item->id, 'lang' => 'en']) . '" class="btn btn-success edit-btn"><i class="fa fa-download"></i> İndir</a>
+                                    <a href="'.route('reservation.download', ['id' => $item->id, 'lang' => 'en']).'" class="btn btn-success edit-btn"><i class="fa fa-download"></i> İndir</a>
                                 </li>
                             </ul>
                         </div>';
@@ -63,7 +63,7 @@ class ReservationController extends Controller
                         return $action;
                     })
                     ->editColumn('source.name', function ($item) {
-                        return '<span class="badge text-white" style="background-color: ' . $item->source->color . '">' . $item->source->name . '</span>';
+                        return '<span class="badge text-white" style="background-color: '. $item->source->color .'">'. $item->source->name .'</span>';
                     })
                     ->editColumn('reservation_date', function ($item) {
                         $action = date('d-m-Y', strtotime($item->reservation_date));
@@ -72,24 +72,25 @@ class ReservationController extends Controller
 
                     ->rawColumns(['action', 'id', 'source.name', 'date'])
                     ->toJson();
-            };
-            $columns = [
-                ['data' => 'action', 'name' => 'action', 'title' => 'İşlem', 'orderable' => false, 'searchable' => false],
-                ['data' => 'id', 'name' => 'id', 'title' => 'id'],
-                ['data' => 'source.name', 'name' => 'source.name', 'title' => 'Kaynak'],
-                ['data' => 'reservation_date', 'name' => 'reservation_date', 'title' => 'Rezervasyon Tarihi'],
-                ['data' => 'reservation_time', 'name' => 'reservation_time', 'title' => 'Rezervasyon Saati'],
-                ['data' => 'pickup_time', 'name' => 'pickup_time', 'title' => 'Alınış Saati'],
-                ['data' => 'room_number', 'name' => 'room_number', 'title' => 'Oda Numarası'],
-                ['data' => 'customer.name_surname', 'name' => 'customer.name_surname', 'title' => 'Müşteri Adı'],
-                ['data' => 'total_customer', 'name' => 'total_customer', 'title' => 'Kişi Sayısı'],
-            ];
-            $html = $builder->columns($columns)->parameters([
-                "pageLength" => 50
-            ]);
+                };
+                $columns = [
+                    ['data' => 'action', 'name' => 'action', 'title' => 'İşlem', 'orderable' => false, 'searchable' => false],
+                    ['data' => 'id', 'name' => 'id', 'title' => 'id'],
+                    ['data' => 'source.name', 'name' => 'source.name', 'title' => 'Kaynak'],
+                    ['data' => 'reservation_date', 'name' => 'reservation_date', 'title' => 'Rezervasyon Tarihi'],
+                    ['data' => 'reservation_time', 'name' => 'reservation_time', 'title' => 'Rezervasyon Saati'],
+                    ['data' => 'pickup_time', 'name' => 'pickup_time', 'title' => 'Alınış Saati'],
+                    ['data' => 'room_number', 'name' => 'room_number', 'title' => 'Oda Numarası'],
+                    ['data' => 'customer.name_surname', 'name' => 'customer.name_surname', 'title' => 'Müşteri Adı'],
+                    ['data' => 'total_customer', 'name' => 'total_customer', 'title' => 'Kişi Sayısı'],
+                ];
+                $html = $builder->columns($columns)->parameters([
+                    "pageLength" => 50
+                ]);
 
             return view('admin.reservations.reservations_list', compact('html'))->with($storages);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -98,13 +99,14 @@ class ReservationController extends Controller
     {
         try {
             $services = Service::orderBy('name', 'asc')->get();
-            $sources = Source::orderBy('name', 'asc')->get();
+            $sources = Source::whereNotIn('id',[1])->orderBy('name', 'asc')->get();
             $therapists = Therapist::orderBy('name', 'asc')->get();
             $customers = Customer::orderBy('name_surname', 'asc')->get();
             $payment_types = PaymentType::orderBy('type_name', 'asc')->get();
             $data = array('services' => $services, 'sources' => $sources, 'therapists' => $therapists, 'customers' => $customers, 'payment_types' => $payment_types);
             return view('admin.reservations.new_reservation')->with($data);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -121,6 +123,7 @@ class ReservationController extends Controller
             $newData->customer_id = $request->input('customerId');
             $newData->discount_id = $request->input('discountId');
             $newData->source_id = $request->input('sourceId');
+            $newData->sales_person_name = $request->input('salePersonName');
             $newData->reservation_note = $request->input('reservationNote');
 
             $newData->user_id = auth()->user()->id;
@@ -134,10 +137,12 @@ class ReservationController extends Controller
 
             if ($result) {
                 return response($newData->id, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -154,10 +159,12 @@ class ReservationController extends Controller
 
             if ($newData->save()) {
                 return response(true, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -175,10 +182,12 @@ class ReservationController extends Controller
 
             if ($newData->save()) {
                 return response(true, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -196,10 +205,12 @@ class ReservationController extends Controller
 
             if ($newData->save()) {
                 return response(true, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -219,10 +230,12 @@ class ReservationController extends Controller
 
             if ($newData->save()) {
                 return response(true, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -240,10 +253,12 @@ class ReservationController extends Controller
 
             if ($newData->save()) {
                 return response(true, 200);
-            } else {
+            }
+            else {
                 return response(false, 500);
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -255,13 +270,17 @@ class ReservationController extends Controller
             $searchDate = $request->input('s');
             $tpStatus = $request->input('ps');
 
-            $arrivalsA = Reservation::select('reservations.reservation_date as date', 'reservations.*', 'reservations.id as tId', 'reservations_payments_types.payment_price',  'sources.color', 'sources.name', 'customers.name_surname as Cname')
-                ->leftJoin('sources', 'reservations.source_id', '=', 'sources.id')
-                ->leftJoin('reservations_payments_types', 'reservations.id', '=', 'reservations_payments_types.reservation_id')
-                ->leftJoin('customers', 'reservations.customer_id', '=', 'customers.id')
-                ->whereDate('reservations.reservation_date', '=', $searchDate)
-                ->groupBy('reservations.id')
-                ->orderBy('reservation_time', 'ASC');
+            $arrivalsA = Reservation::select('reservations.reservation_date as date', 'services.*', 'reservations_services.*','reservations.*', 'reservations.id as tId', 'sources.id as sId', 'reservations_payments_types.payment_price',  'sources.color', 'sources.name', 'reservations_services.service_id as svId', 'customers.name_surname as Cname','reservations_comissions.hotel_id','hotels.name as hName','services.name as sName', DB::raw('(SELECT GROUP_CONCAT(services.name) FROM services INNER JOIN reservations_services ON services.id = reservations_services.service_id WHERE reservations_services.reservation_id = reservations.id) as service_names'))
+            ->leftJoin('sources', 'reservations.source_id', '=', 'sources.id')
+            ->leftJoin('reservations_comissions', 'reservations_comissions.reservation_id', '=', 'reservations.id')
+            ->leftJoin('hotels', 'hotels.id', '=', 'reservations_comissions.hotel_id')
+            ->leftJoin('reservations_payments_types', 'reservations.id', '=', 'reservations_payments_types.reservation_id')
+            ->leftJoin('reservations_services', 'reservations.id', '=', 'reservations_services.reservation_id')
+            ->leftJoin('services', 'services.id', '=', 'reservations_services.service_id')
+            ->leftJoin('customers', 'reservations.customer_id', '=', 'customers.id')
+            ->whereDate('reservations.reservation_date', '=', $searchDate)
+            ->groupBy('reservations.id')
+            ->orderBy('reservation_time', 'ASC');
 
             if (!empty($tpStatus)) {
                 $arrivalsA->where('reservations.source_id', '=', $tpStatus);
@@ -277,7 +296,8 @@ class ReservationController extends Controller
 
             $data = array('listAllByDates' => $listAllByDates, 'tableTitle' => $datePrmtr . ' Tarihindeki Tüm Rezervasyonlar');
             return view('admin.reservations.all_reservation')->with($data);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -288,20 +308,19 @@ class ReservationController extends Controller
             $user = auth()->user();
 
             $calendarCount = Reservation::select('reservations.reservation_date as date', 'reservations.reservation_time as time', 'reservations.total_customer as total_customer', 'sources.id as sId', 'sources.color', 'sources.name', DB::raw('count(name) as countR'))
-                ->leftJoin('sources', 'reservations.source_id', '=', 'sources.id')
-                ->whereNull('reservations.deleted_at')
-                ->whereNotNull('reservations.source_id')
-                // ->whereMonth('treatment_plans.created_date', Carbon::now()->month)
-                ->groupBy(['date', 'time', 'sId']);
+            ->leftJoin('sources', 'reservations.source_id', '=', 'sources.id')
+            ->whereNull('reservations.deleted_at')
+            ->whereNotNull('reservations.source_id')
+            // ->whereMonth('treatment_plans.created_date', Carbon::now()->month)
+            ->groupBy(['date', 'time', 'sId']);
 
-            $listCountByMonth = DB::select(
-                $calendarCount->groupBy(DB::raw('sId'))->toSql(),
-                $calendarCount->getBindings()
-            );
+            $listCountByMonth = DB::select($calendarCount->groupBy(DB::raw('sId'))->toSql(),
+            $calendarCount->getBindings());
 
             $data = array('listCountByMonth' => $listCountByMonth);
             return view('admin.reservations.reservation_calendar')->with($data);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -309,12 +328,12 @@ class ReservationController extends Controller
     public function edit(Request $request, $id)
     {
         try {
-            $reservation = Reservation::where('id', '=', $id)->first();
+            $reservation = Reservation::where('id','=', $id)->first();
             $services = Service::orderBy('name', 'asc')->get();
             $therapists = Therapist::orderBy('name', 'asc')->get();
             $payment_types = PaymentType::all();
             $hotels = Hotel::all();
-            $sources = Source::all();
+            $sources = Source::where('id','!=',$reservation->source_id)->whereNotIn('id',[1])->get();
             $guides = Guide::all();
             $reservation_payment_type = ReservationPaymentType::where('reservations_payments_types.reservation_id', '=', $id);
 
@@ -339,14 +358,14 @@ class ReservationController extends Controller
             $totalPriceGBP  = [];
             $totalPriceEuro = [];
             $totalPriceUsd  = [];
-            foreach ($reservation->subPaymentTypes as $subPaymentType) {
-                if ($subPaymentType->type_name == 'CASH TL' || $subPaymentType->type_name == 'ZİRAAT KK TL' || $subPaymentType->type_name == 'YKB KK TL') {
+            foreach($reservation->subPaymentTypes as $subPaymentType) {
+                if($subPaymentType->type_name == 'CASH TL' || $subPaymentType->type_name == 'ZİRAAT KK TL' || $subPaymentType->type_name == 'YKB KK TL'){
                     array_push($totalPriceTL, $subPaymentType->payment_price);
-                } elseif ($subPaymentType->type_name == 'CASH POUND') {
+                }elseif ($subPaymentType->type_name == 'CASH POUND') {
                     array_push($totalPriceGBP, $subPaymentType->payment_price);
-                } elseif ($subPaymentType->type_name == 'CASH EURO' || $subPaymentType->type_name == 'ZİRAAT KK EURO' || $subPaymentType->type_name == 'VIATOR EURO') {
+                }elseif($subPaymentType->type_name == 'CASH EURO' || $subPaymentType->type_name == 'ZİRAAT KK EURO' || $subPaymentType->type_name == 'VIATOR EURO') {
                     array_push($totalPriceEuro, $subPaymentType->payment_price);
-                } elseif ($subPaymentType->type_name == 'CASH DOLAR' || $subPaymentType->type_name == 'ZİRAAT KK DOLAR') {
+                }elseif($subPaymentType->type_name == 'CASH DOLAR' || $subPaymentType->type_name == 'ZİRAAT KK DOLAR'){
                     array_push($totalPriceUsd, $subPaymentType->payment_price);
                 }
             }
@@ -362,20 +381,24 @@ class ReservationController extends Controller
             $totalPaymentEuro = array_sum($totalPriceEuro);
             $totalPaymentUsd  = array_sum($totalPriceUsd);
             $totalPayment     = array_sum($totalPriceTL);
-            $totalTL = $totalPayment + ($totalPaymentGBP * $gbp_satis) + ($totalPaymentEuro * $euro_satis) + ($totalPaymentUsd * $usd_satis);
+            $totalTL= $totalPayment + ($totalPaymentGBP * $gbp_satis) + ($totalPaymentEuro * $euro_satis) + ($totalPaymentUsd * $usd_satis);
             $totalEuro = $totalTL / $euro_satis;
-            $data = array('totalTL' => $totalTL, 'totalEuro' => $totalEuro, 'guides' => $guides, 'reservation' => $reservation, 'services' => $services, 'sources' => $sources, 'therapists' => $therapists, 'payment_types' => $payment_types, 'hasPaymentType' => $hasPaymentType, 'hasComission' => $hasComission, 'hasService' => $hasService, 'hasTherapist' => $hasTherapist, 'hotels' => $hotels);
+            $data = array('totalTL'=>$totalTL,'totalEuro' => $totalEuro,'guides'=>$guides,'reservation' => $reservation, 'services' => $services, 'sources' => $sources, 'therapists' => $therapists, 'payment_types' => $payment_types, 'hasPaymentType' => $hasPaymentType, 'hasComission' => $hasComission, 'hasService' => $hasService, 'hasTherapist' => $hasTherapist, 'hotels' => $hotels);
 
             $page = $request->input('page');
 
-            if ($page == "payments") {
+            if($page == "payments"){
                 return view('admin.reservations.payment_reservation')->with($data);
-            } else if ($page == "comissions") {
+            }
+            else if($page == "comissions"){
                 return view('admin.reservations.comission_reservation')->with($data);
-            } else {
+            }
+            else {
                 return view('admin.reservations.edit_reservation')->with($data);
             }
-        } catch (\Throwable $th) {
+
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -383,10 +406,11 @@ class ReservationController extends Controller
     public function editPaymentType($id)
     {
         try {
-            $reservation_payment_type = ReservationPaymentType::where('id', '=', $id)->first();
+            $reservation_payment_type = ReservationPaymentType::where('id','=', $id)->first();
             $payment_types = PaymentType::all();
             return view('admin.reservations.edit_payment_type', ['reservation_payment_type' => $reservation_payment_type, 'payment_types' => $payment_types]);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -394,10 +418,11 @@ class ReservationController extends Controller
     public function editService($id)
     {
         try {
-            $reservation_service = ReservationService::where('id', '=', $id)->first();
+            $reservation_service = ReservationService::where('id','=', $id)->first();
             $services = Service::orderBy('name', 'asc')->get();
             return view('admin.reservations.edit_service', ['reservation_service' => $reservation_service, 'services' => $services]);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -405,10 +430,11 @@ class ReservationController extends Controller
     public function editTherapist($id)
     {
         try {
-            $reservation_therapist = ReservationTherapist::where('id', '=', $id)->first();
+            $reservation_therapist = ReservationTherapist::where('id','=', $id)->first();
             $therapists = Therapist::orderBy('name', 'asc')->get();
             return view('admin.reservations.edit_therapist', ['reservation_therapist' => $reservation_therapist, 'therapists' => $therapists]);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -416,13 +442,14 @@ class ReservationController extends Controller
     public function editHotelComission($id)
     {
         try {
-            $hotel_comission = ReservationComission::where('id', '=', $id)
-                ->whereNull('reservations_comissions.guide_id')
-                ->first();
+            $hotel_comission = ReservationComission::where('id','=', $id)
+            ->whereNull('reservations_comissions.guide_id')
+            ->first();
 
             $hotels = Hotel::orderBy('name', 'asc')->get();
             return view('admin.reservations.edit_hotel_comission', ['hotel_comission' => $hotel_comission, 'hotels' => $hotels]);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -430,13 +457,14 @@ class ReservationController extends Controller
     public function editGuideComission($id)
     {
         try {
-            $guide_comission = ReservationComission::where('id', '=', $id)
-                ->whereNull('reservations_comissions.hotel_id')
-                ->first();
+            $guide_comission = ReservationComission::where('id','=', $id)
+            ->whereNull('reservations_comissions.hotel_id')
+            ->first();
 
             $guides = Guide::orderBy('name', 'asc')->get();
             return view('admin.reservations.edit_guide_comission', ['guide_comission' => $guide_comission, 'guides' => $guides]);
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -456,10 +484,12 @@ class ReservationController extends Controller
 
             if (Reservation::where('id', '=', $id)->update($temp)) {
                 return redirect()->route('reservation.calendar')->with('message', 'Rezervasyon Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -474,10 +504,12 @@ class ReservationController extends Controller
 
             if (ReservationPaymentType::where('id', '=', $id)->update($temp)) {
                 return back()->with('message', 'Ödeme Türü Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -492,10 +524,12 @@ class ReservationController extends Controller
 
             if (ReservationService::where('id', '=', $id)->update($temp)) {
                 return back()->with('message', 'Hizmet Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -510,10 +544,12 @@ class ReservationController extends Controller
 
             if (ReservationTherapist::where('id', '=', $id)->update($temp)) {
                 return back()->with('message', 'Terapist Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -528,10 +564,12 @@ class ReservationController extends Controller
 
             if (ReservationComission::where('id', '=', $id)->update($temp)) {
                 return back()->with('message', 'Komisyon Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -546,59 +584,61 @@ class ReservationController extends Controller
 
             if (ReservationComission::where('id', '=', $id)->update($temp)) {
                 return back()->with('message', 'Komisyon Başarıyla Güncellendi!');
-            } else {
+            }
+            else {
                 return back()->withInput($request->input());
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function destroyPaymentType($id)
-    {
+    public function destroyPaymentType($id){
         try {
             ReservationPaymentType::find($id)->delete();
             return back()->with('message', 'Ödeme Türü Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function destroyService($id)
-    {
+    public function destroyService($id){
         try {
             ReservationService::find($id)->delete();
             return back()->with('message', 'Hizmet Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function destroyTherapist($id)
-    {
+    public function destroyTherapist($id){
         try {
             ReservationTherapist::find($id)->delete();
             return back()->with('message', 'Terapist Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function destroyHotelComission($id)
-    {
+    public function destroyHotelComission($id){
         try {
             ReservationComission::find($id)->delete();
             return back()->with('message', 'Otel Komisyonu Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
-    public function destroyGuideComission($id)
-    {
+    public function destroyGuideComission($id){
         try {
             ReservationComission::find($id)->delete();
             return back()->with('message', 'Rehber Komisyonu Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
@@ -617,48 +657,49 @@ class ReservationController extends Controller
             $data = array('reservation' => $reservation, 'total' => $total);
 
             switch ($lang) {
-                case "en":
-                    return view('admin.reservations.languages.download_en')->with($data);
-                    break;
-                case "de":
-                    return view('admin.reservations.languages.download_de')->with($data);
-                    break;
-                case "fr":
-                    return view('admin.reservations.languages.download_fr')->with($data);
-                    break;
-                case "it":
-                    return view('admin.reservations.languages.download_it')->with($data);
-                    break;
-                case "es":
-                    return view('admin.reservations.languages.download_es')->with($data);
-                    break;
-                case "tr":
-                    return view('admin.reservations.languages.download_tr')->with($data);
-                    break;
-                case "ru":
-                    return view('admin.reservations.languages.download_ru')->with($data);
-                    break;
-                case "pl":
-                    return view('admin.reservations.languages.download_pl')->with($data);
-                    break;
-                case "pt":
-                    return view('admin.reservations.languages.download_tr')->with($data);
-                    break;
-                case "ar":
-                    return view('admin.reservations.languages.download_tr')->with($data);
-                    break;
+            case "en":
+                return view('admin.reservations.languages.download_en')->with($data);
+                break;
+            case "de":
+                return view('admin.reservations.languages.download_de')->with($data);
+                break;
+            case "fr":
+                return view('admin.reservations.languages.download_fr')->with($data);
+                break;
+            case "it":
+                return view('admin.reservations.languages.download_it')->with($data);
+                break;
+            case "es":
+                return view('admin.reservations.languages.download_es')->with($data);
+                break;
+            case "tr":
+                return view('admin.reservations.languages.download_tr')->with($data);
+                break;
+            case "ru":
+                return view('admin.reservations.languages.download_ru')->with($data);
+                break;
+            case "pl":
+                return view('admin.reservations.languages.download_pl')->with($data);
+                break;
+            case "pt":
+                return view('admin.reservations.languages.download_tr')->with($data);
+                break;
+            case "ar":
+                return view('admin.reservations.languages.download_tr')->with($data);
+                break;
             }
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function destroy($id)
-    {
+    public function destroy($id){
         try {
             Reservation::find($id)->delete();
             return back()->with('message', 'Rezervasyon Başarıyla Silindi!');
-        } catch (\Throwable $th) {
+        }
+        catch (\Throwable $th) {
             throw $th;
         }
     }

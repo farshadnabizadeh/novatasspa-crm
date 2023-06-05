@@ -93,11 +93,16 @@
                     events: [
                         @foreach($listCountByMonth as $reservation)
                         {
-                            title: '{{ $reservation->name }} - {{ $reservation->total_customer }} Pax',
+                            @if ($reservation->sId == 3 || $reservation->sId == 5 || $reservation->sId == 4 || $reservation->sId == 18 )
+                                title: 'GOOGLE - {{ $reservation->total_customer }} Pax',
+                                color: '#276cb8',
+                            @else
+                                title: '{{ $reservation->name }} - {{ $reservation->total_customer }} Pax',
+                                color: '{{ $reservation->color }}',
+                            @endif
                             start: '{{ $reservation->date }} {{ $reservation->time }}',
                             description: '{{ $reservation->countR }} {{ $reservation->name }}',
                             end: '{{ $reservation->date }}',
-                            color: '{{ $reservation->color }}',
                             url: '{{ url('/reservationbydate?s='.$reservation->date) }}',
                             textColor: '#fff',
                         },

@@ -156,10 +156,18 @@
                                                 @foreach ($sourcesAll as $source)
                                                     <tr>
                                                         <td>{{ $source->source->name }}</td>
-                                                        <td>{{ $source->sourceCount }} Reservation / {{ $source->paxCount }}
-                                                            Pax</td>
+                                                        @if ($source->source->id == 1)
+                                                        <td>{{ $source->sourceCount + $subSourceCount }} Reservation / {{ $source->paxCount + $subSourcePax }} Pax</td>
+                                                        @else
+                                                            <td>{{ $source->sourceCount }} Reservation / {{ $source->paxCount }} Pax</td>
+                                                        @endif
+
                                                     </tr>
                                                 @endforeach
+                                                @if ($subSourcesCount == 0 )
+                                                    <td>GOOGLE</td>
+                                                    <td>{{ $subSourceCount }} Reservation / {{ $subSourcePax }} Pax</td>
+                                                @endif
                                             </tbody>
                                         </table>
                                     </div>
@@ -172,6 +180,65 @@
                                     </div>
                                     <div class="card-body">
                                         <canvas id="source-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card p-3 report-card" id="reservation">
+                                    <div class="card-title">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <h3>Rezervasyon Ülke Özetleri</h3>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <button class="btn btn-success float-right download-report-btn mt-1" onclick="tableCountryExcel()"><i class="fa fa-download"></i> İndir</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <p>TOPLAM Rezervasyon: <b class="ml-3">{{ $reservationByDateCount }}</b></p>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <p>TOPLAM Kişi: <b class="ml-3">{{ $paxByDateCount }}</b></p>
+                                        </div>
+                                    </div>
+                                    <hr class="pb-3">
+                                    <div class="col-lg-12">
+                                        <table id="tableCountry" class="table table-striped table-bordered nowrap">
+                                            <thead>
+                                                <tr>
+                                                    <th>Ülke Adı</th>
+                                                    <th>Toplam</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($byCountry as $Country)
+                                                    <tr>
+                                                        @if ($Country->customer && $Country->customer->country)
+                                                            <td>
+                                                                {{ $Country->customer->country }}
+                                                            </td>
+                                                        @else
+                                                            <td></td>
+                                                        @endif
+                                                        <td>{{ $Country->customerCount }} Reservation / {{ $Country->paxCount}} Pax</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Rezervasyon Ülke Özetleri</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="country-chart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -687,6 +754,32 @@
                     data: guideComissionData,
                     backgroundColor: guideComissionColors,
                     borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        //country chart
+        var byCountryLabels = @json($byCountryLabels);
+        var byCountryData = @json($byCountryData);
+        var byCountryColors = @json($byCountryColors);
+        var byCountryChart = new Chart(document.getElementById("country-chart"), {
+            type: 'bar',
+            data: {
+                labels: byCountryLabels,
+                datasets: [{
+                    label: 'Rezervasyon Ükle Özetleri',
+                    data: byCountryData,
+                    backgroundColor: byCountryColors,
+                    borderColor: 'rgba(255, 99, 132, 1)',
                     borderWidth: 1
                 }]
             },
