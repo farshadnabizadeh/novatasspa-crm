@@ -7,7 +7,7 @@
       <meta name="robots" content="noindex">
       <meta http-equiv="X-UA-Compatible" content="ie=edge">
       <meta http-equiv="X-UA-Compatible" content="IE=7">
-      <title>Catma Mescit Hammam | Rezervasyon Takvimi</title>
+      <title>Novatas Spa | Rezervasyon Takvimi</title>
       <link rel="dns-prefetch" href="//fonts.gstatic.com">
       <link type="text/css" href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
       <link type="text/css" href="{{ asset('assets/css/app.css') }}" rel="stylesheet">
