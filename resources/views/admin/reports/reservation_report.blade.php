@@ -296,17 +296,18 @@
                                                         <b>$ {{ number_format($ziraatDolar, 2) }}</b>
                                                     </div>
                                                     <div class="col-lg-4">
-                                                        <p>HOTELISTAN VP EURO:</p>
-                                                    </div>
-                                                    <div class="col-lg-8">
-                                                        <b>€ {{ number_format($hotelistanVPEuro, 2) }}</b>
-                                                    </div>
-                                                    <div class="col-lg-4">
                                                         <p>ZİRAAT KK EURO:</p>
                                                     </div>
                                                     <div class="col-lg-8">
                                                         <b>€ {{ number_format($ziraatEuro, 2) }}</b>
                                                     </div>
+                                                    <div class="col-lg-4">
+                                                        <p>HOTELISTAN VP EURO:</p>
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <b>€ {{ number_format($hotelistanVPEuro, 2) }}</b>
+                                                    </div>
+
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-lg-4">
@@ -314,6 +315,18 @@
                                                     </div>
                                                     <div class="col-lg-8">
                                                         <b>$ {{ number_format($hotelistanVPUsd, 2) }}</b>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <p>HOTELISTAN VP GBP:</p>
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <b>$ {{ number_format($hotelistanVPGbp, 2) }}</b>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        <p>HOTELISTAN VP USD:</p>
+                                                    </div>
+                                                    <div class="col-lg-8">
+                                                        <b>$ {{ number_format($hotelistanVPTL, 2) }}</b>
                                                     </div>
                                                     <div class="col-lg-4">
                                                         <p>VIATOR EURO:</p>
