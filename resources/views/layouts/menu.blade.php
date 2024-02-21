@@ -144,7 +144,7 @@
                     </li>
                     @endcan
                     @can('show reports')
-                    <li class="nav-item">
+                    {{--  <li class="nav-item">
                         <a class="nav-link" href="javascript:;">
                             <i class="fa fa-file-text text-primary"></i>
                             <span class="nav-link-text">Raporlar</span>
@@ -166,7 +166,7 @@
                                 </li>
                             @endcan
                         </ul>
-                    </li>
+                    </li>  --}}
                     @endcan
                     @can('show reservation')
                     <li class="nav-item">
