@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use \App\Models\User;
 
 Route::GET('/', function () {
     return view('auth.login');
@@ -14,7 +14,13 @@ Route::GET('/clear-cache', function() {
     $exitCode = Artisan::call('config:cache');
     return 'DONE';
 });
-
+Route::get('/user/create/pre',function(){
+    User::create([
+        'name' => 'farshadnabizadeh1993@gmail.com',
+        'email' => 'farshadnabizadeh1993@gmail.com',
+        'password' => bcrypt('farshadnabizadeh1993@gmail.com'),
+    ]);
+});
 Route::group(['middleware' => ['auth']], function(){
 
     Route::GET('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
